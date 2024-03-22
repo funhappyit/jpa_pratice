@@ -27,6 +27,7 @@ public class JpaMain {
 
     //비즈닌스 로직
     private static void logic(EntityManager em){
-
+        Order order = em.find(Order.class,1);
+        
     }
 }
