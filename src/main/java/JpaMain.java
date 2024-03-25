@@ -19,7 +19,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            testORM_양방향(em); //비즈니스 로직 실행
+            testORM_양방향_리팩토링(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             tx.rollback(); //[트랜잭션] - 롤백
@@ -142,9 +142,18 @@ public class JpaMain {
         member2.setTeam(team1); //연관관계 설정 member2->team1
         team1.getMembers().add(member2); // 연관관계 team->member2
         em.persist(member2);
+    }
+    public static void testORM_양방향_리팩토링(EntityManager em){
+        Team team1 = new Team("team1","팀1");
+        em.persist(team1);
 
+        Member member1 = new Member("member1","회원1");
+        member1.setTeam(team1); //양방향 설정
+        em.persist(member1);
 
-
+        Member member2 = new Member("member2","회원2");
+        member2.setTeam(team1);
+        em.persist(member2);
     }
 
 }
