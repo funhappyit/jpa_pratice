@@ -5,26 +5,32 @@ import javax.persistence.*;
 @Entity
 public class Member {
 
-    @Id
+    @Id @GeneratedValue
     @Column(name="MEMBER_ID")
     private String id;
 
     private String username;
 
+    @ManyToOne
+    @JoinColumn(name="TEAM_ID")
+    private Team team;
 
+    public void setTeam(Team team) {
+        this.team = team;
+        //무한루프에 빠지지 않도록 체크
+        if(!team.getMembers().contains(this)){
+            team.getMembers().add(this);
+        }
+    }
     public Member(String id, String username) {
         this.id = id;
         this.username = username;
     }
 
-    //연관관계 매핑
-    @ManyToOne
-    @JoinColumn(name="TRAM_ID")
-    private Team team;
-
     public Member() {
 
     }
+
 
     public String getId() {
         return id;
@@ -46,7 +52,5 @@ public class Member {
         return team;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
-    }
+
 }
