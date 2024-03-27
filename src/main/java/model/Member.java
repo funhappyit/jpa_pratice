@@ -1,19 +1,46 @@
 package model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
 
-    @Id @GeneratedValue
+    @Id
     @Column(name="MEMBER_ID")
     private String id;
 
     private String username;
 
+    //역방향
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts;
+
+
+
+//    @ManyToMany
+//    @JoinTable(name="MEMBER_PRODUCT",
+//    joinColumns = @JoinColumn(name="MEMBER_ID"),
+//    inverseJoinColumns = @JoinColumn(name="PRODUCT_ID"))
+//    private List<Product> products = new ArrayList<Product>();
+
+
+    @OneToOne
+    @JoinColumn(name="LOCKET_ID")
+    private Locker locker;
+
     @ManyToOne
     @JoinColumn(name="TEAM_ID")
     private Team team;
+
+    public Locker getLocker() {
+        return locker;
+    }
+
+    public void setLocker(Locker locker) {
+        this.locker = locker;
+    }
 
     public void setTeam(Team team) {
         this.team = team;

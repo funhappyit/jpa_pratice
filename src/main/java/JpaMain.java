@@ -1,5 +1,4 @@
-import model.Member;
-import model.Team;
+import model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,7 +18,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            testORM_양방향_리팩토링(em); //비즈니스 로직 실행
+            find(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             tx.rollback(); //[트랜잭션] - 롤백
@@ -154,6 +153,75 @@ public class JpaMain {
         Member member2 = new Member("member2","회원2");
         member2.setTeam(team1);
         em.persist(member2);
+    }
+
+    //저장
+//    public static void save(EntityManager em){
+//        Product productA = new Product();
+//        productA.setId("productA");
+//        productA.setName("상품A");
+//        em.persist(productA);
+//
+//        Member member1 = new Member();
+//        member1.setId("member1");
+//        member1.setUsername("회원1");
+//        member1.getProducts().add(productA); //연관관계 설정
+//        em.persist(member1);
+//
+//    }
+
+//    public static void find(EntityManager em){
+//        Member member = em.find(Member.class,"member1");
+//        List<Product> products = member.getProducts(); //객체 그래프 탐색
+//        for(Product product : products){
+//            System.out.println("product.name="+product.getName());
+//        }
+//    }
+
+//    public static void findInverse(EntityManager em){
+//        Product product = em.find(Product.class,"productA");
+//        List<Member> members = product.getMembers();
+//        for(Member member:members){
+//            System.out.println("member = "+member.getUsername());
+//        }
+//    }
+
+    public static void save(EntityManager em){
+        //회원 저장
+        Member member1 = new Member();
+        member1.setId("member1");
+        member1.setUsername("회원1");
+        em.persist(member1);
+
+        //상품 저장
+        Product productA = new Product();
+        productA.setId("productA");
+        productA.setName("상품1");
+        em.persist(productA);
+
+        //회원상품 저장
+        MemberProduct memberProduct = new MemberProduct();
+        memberProduct.setMember(member1);
+        memberProduct.setProduct(productA);
+        memberProduct.setOrderAmount(2);
+
+        em.persist(memberProduct);
+
+    }
+    public static void find(EntityManager em){
+        //기본 키 생성
+        MemberProductId memberProductId = new MemberProductId();
+        memberProductId.setMember("member1");
+        memberProductId.setProduct("productA");
+
+        MemberProduct memberProduct = em.find(MemberProduct.class,memberProductId);
+
+        Member member = memberProduct.getMember();
+        Product product = memberProduct.getProduct();
+        System.out.println("member = "+member.getUsername());
+        System.out.println("product = "+product.getName());
+        System.out.println("orderAmount = "+memberProduct.getOrderAmount());
+
     }
 
 }
