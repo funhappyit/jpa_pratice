@@ -4,21 +4,22 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="ORDERS")
+@Table(name = "ORDER_TABLE")
 public class Order {
 
     @Id @GeneratedValue
     @Column(name="ORDER_ID")
     private Long id;
 
-    @Column(name="MEMBER_ID")
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name="MEMBER_ID")
+    private Member member;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date orderDate; //주문 날짜
+    @ManyToOne
+    @JoinColumn(name="PRODUCT_ID")
+    private Product product;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private int orderAmount;
 
     public Long getId() {
         return id;
@@ -28,27 +29,27 @@ public class Order {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public OrderStatus getStatus() {
-        return status;
+    public int getOrderAmount() {
+        return orderAmount;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
+    public void setOrderAmount(int orderAmount) {
+        this.orderAmount = orderAmount;
     }
 }

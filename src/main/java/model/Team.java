@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Team {
 
     @Id @GeneratedValue
@@ -16,12 +16,12 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<Member>();
 
-    public void addMember(Member member){
-        this.members.add(member);
-        if(member.getTeam() != this){ //무한루프에 빠지지 않도록 체크
-            member.setTeam(this);
-        }
-    }
+//    public void addMember(Member member){
+//        this.members.add(member);
+//        if(member.getTeam() != this){ //무한루프에 빠지지 않도록 체크
+//            member.setTeam(this);
+//        }
+//    }
 
     public List<Member> getMembers() {
         return members;

@@ -30,54 +30,54 @@ public class JpaMain {
 
 
     //비즈닌스 로직
-    private static void logic(EntityManager em){
-        //팀 1 저장
-        Team team1 = new Team("team1","팀1");
-        em.persist(team1);
-
-        //회원1 저장
-        Member member1 = new Member("member1","회원1");
-        member1.setTeam(team1); //연관관계 설정 member1-> team1
-        em.persist(member1);
-
-        //회원2 저장
-        Member member2 = new Member("member2","회원2");
-        member2.setTeam(team1); //연관관계 설정 member2->team1
-        em.persist(member2);
-    }
+//    private static void logic(EntityManager em){
+//        //팀 1 저장
+//        Team team1 = new Team("team1","팀1");
+//        em.persist(team1);
+//
+//        //회원1 저장
+//        Member member1 = new Member("member1","회원1");
+//        member1.setTeam(team1); //연관관계 설정 member1-> team1
+//        em.persist(member1);
+//
+//        //회원2 저장
+//        Member member2 = new Member("member2","회원2");
+//        member2.setTeam(team1); //연관관계 설정 member2->team1
+//        em.persist(member2);
+//    }
 
     //JPQL 조인 검색
-    private static void queryLogicJoin(EntityManager em){
-        String jpq1 = "select m from Member m join m.team t where "+"t.name=:teamName";
-
-        List<Member> resultList = em.createQuery(jpq1,Member.class)
-                .setParameter("teamName","팀1")
-                .getResultList();
-
-        for(Member member:resultList){
-            System.out.println("[query] member.username="+member.getUsername());
-        }
-    }
+//    private static void queryLogicJoin(EntityManager em){
+//        String jpq1 = "select m from Member m join m.team t where "+"t.name=:teamName";
+//
+//        List<Member> resultList = em.createQuery(jpq1,Member.class)
+//                .setParameter("teamName","팀1")
+//                .getResultList();
+//
+//        for(Member member:resultList){
+//            System.out.println("[query] member.username="+member.getUsername());
+//        }
+//    }
     //수정
-    private static void updateRelation(EntityManager em){
-        //새로운 팀2
-        Team team2 = new Team("team2","팀2");
-        em.persist(team2);
-
-        //회원1에 새로운 팀2 설정
-        Member member = em.find(Member.class,"member1");
-        member.setTeam(team2);
-    }
-    //연관관계를 삭제하는 코드
-    private static void deleteRelation(EntityManager em){
-        Member member1 = em.find(Member.class,"member1");
-        Member member2 = em.find(Member.class,"member2");
-        member1.setTeam(null);
-        member2.setTeam(null);
-        Team team = em.find(Team.class,"team1");
-        em.remove(team);
-
-    }
+//    private static void updateRelation(EntityManager em){
+//        //새로운 팀2
+//        Team team2 = new Team("team2","팀2");
+//        em.persist(team2);
+//
+//        //회원1에 새로운 팀2 설정
+//        Member member = em.find(Member.class,"member1");
+//        member.setTeam(team2);
+//    }
+//    //연관관계를 삭제하는 코드
+//    private static void deleteRelation(EntityManager em){
+//        Member member1 = em.find(Member.class,"member1");
+//        Member member2 = em.find(Member.class,"member2");
+//        member1.setTeam(null);
+//        member2.setTeam(null);
+//        Team team = em.find(Team.class,"team1");
+//        em.remove(team);
+//
+//    }
 
     //일대다 방향으로 객체 그래프 탐색
     public static void biDirection(EntityManager em){
@@ -108,52 +108,52 @@ public class JpaMain {
 
     }
 
-    private static void test순수한객체_양방향(EntityManager em) {
-        //팀1
-        Team team1 = new Team("team1","팀1");
-        Member member1 = new Member("member1","회원1");
-        Member member2 = new Member("member2","회원2");
-
-
-        member1.setTeam(team1); //연관관계 설정 member1 -> team1
-        team1.getMembers().add(member1);
-        member2.setTeam(team1); //연관관계 설정 member2 -> team1
-        team1.getMembers().add(member2);
-        List<Member> members = team1.getMembers();
-        System.out.println("members.size="+members.size());
-
-    }
-    private static void testORM_양방향(EntityManager em){
-        //팀1 저장
-        Team team1 = new Team("team1","팀1");
-        em.persist(team1);
-
-        Member member1 = new Member("member1","회원1");
-
-        //양방향 연관관계 설정
-        member1.setTeam(team1); //연관관게 설정 member1->team1
-        team1.getMembers().add(member1); //연관관계 설정 team1->member1
-        em.persist(member1);
-
-        Member member2 = new Member("member2","회원2");
-
-        //양방향 연관관계 설정
-        member2.setTeam(team1); //연관관계 설정 member2->team1
-        team1.getMembers().add(member2); // 연관관계 team->member2
-        em.persist(member2);
-    }
-    public static void testORM_양방향_리팩토링(EntityManager em){
-        Team team1 = new Team("team1","팀1");
-        em.persist(team1);
-
-        Member member1 = new Member("member1","회원1");
-        member1.setTeam(team1); //양방향 설정
-        em.persist(member1);
-
-        Member member2 = new Member("member2","회원2");
-        member2.setTeam(team1);
-        em.persist(member2);
-    }
+//    private static void test순수한객체_양방향(EntityManager em) {
+//        //팀1
+//        Team team1 = new Team("team1","팀1");
+//        Member member1 = new Member("member1","회원1");
+//        Member member2 = new Member("member2","회원2");
+//
+//
+//        member1.setTeam(team1); //연관관계 설정 member1 -> team1
+//        team1.getMembers().add(member1);
+//        member2.setTeam(team1); //연관관계 설정 member2 -> team1
+//        team1.getMembers().add(member2);
+//        List<Member> members = team1.getMembers();
+//        System.out.println("members.size="+members.size());
+//
+//    }
+//    private static void testORM_양방향(EntityManager em){
+//        //팀1 저장
+//        Team team1 = new Team("team1","팀1");
+//        em.persist(team1);
+//
+//        Member member1 = new Member("member1","회원1");
+//
+//        //양방향 연관관계 설정
+//        member1.setTeam(team1); //연관관게 설정 member1->team1
+//        team1.getMembers().add(member1); //연관관계 설정 team1->member1
+//        em.persist(member1);
+//
+//        Member member2 = new Member("member2","회원2");
+//
+//        //양방향 연관관계 설정
+//        member2.setTeam(team1); //연관관계 설정 member2->team1
+//        team1.getMembers().add(member2); // 연관관계 team->member2
+//        em.persist(member2);
+//    }
+//    public static void testORM_양방향_리팩토링(EntityManager em){
+//        Team team1 = new Team("team1","팀1");
+//        em.persist(team1);
+//
+//        Member member1 = new Member("member1","회원1");
+//        member1.setTeam(team1); //양방향 설정
+//        em.persist(member1);
+//
+//        Member member2 = new Member("member2","회원2");
+//        member2.setTeam(team1);
+//        em.persist(member2);
+//    }
 
     //저장
 //    public static void save(EntityManager em){
@@ -186,11 +186,48 @@ public class JpaMain {
 //        }
 //    }
 
+//    public static void save(EntityManager em){
+//        //회원 저장
+//        Member member1 = new Member();
+//        member1.setId("member1");
+//        member1.setUsername("회원1");
+//        em.persist(member1);
+//
+//        //상품 저장
+//        Product productA = new Product();
+//        productA.setId("productA");
+//        productA.setName("상품1");
+//        em.persist(productA);
+//
+//        //회원상품 저장
+//        MemberProduct memberProduct = new MemberProduct();
+//        memberProduct.setMember(member1);
+//        memberProduct.setProduct(productA);
+//        memberProduct.setOrderAmount(2);
+//
+//        em.persist(memberProduct);
+//    }
+
+//    public static void find(EntityManager em){
+//        //기본 키 생성
+//        MemberProductId memberProductId = new MemberProductId();
+//        memberProductId.setMember("member1");
+//        memberProductId.setProduct("productA");
+//
+//        MemberProduct memberProduct = em.find(MemberProduct.class,memberProductId);
+//
+//        Member member = memberProduct.getMember();
+//        Product product = memberProduct.getProduct();
+//        System.out.println("member = "+member.getUsername());
+//        System.out.println("product = "+product.getName());
+//        System.out.println("orderAmount = "+memberProduct.getOrderAmount());
+//
+//    }
     public static void save(EntityManager em){
         //회원 저장
         Member member1 = new Member();
         member1.setId("member1");
-        member1.setUsername("회원1");
+        member1.setUsername("회원");
         em.persist(member1);
 
         //상품 저장
@@ -199,28 +236,24 @@ public class JpaMain {
         productA.setName("상품1");
         em.persist(productA);
 
-        //회원상품 저장
-        MemberProduct memberProduct = new MemberProduct();
-        memberProduct.setMember(member1);
-        memberProduct.setProduct(productA);
-        memberProduct.setOrderAmount(2);
-
-        em.persist(memberProduct);
-
+        //주문 저장
+        Order order = new Order();
+        order.setMember(member1);
+        order.setProduct(productA);
+        order.setOrderAmount(2);
+        em.persist(order);
     }
+
     public static void find(EntityManager em){
-        //기본 키 생성
-        MemberProductId memberProductId = new MemberProductId();
-        memberProductId.setMember("member1");
-        memberProductId.setProduct("productA");
+        Long orderId = 1L;
+        Order order = em.find(Order.class,orderId);
 
-        MemberProduct memberProduct = em.find(MemberProduct.class,memberProductId);
+        Member member = order.getMember();
+        Product product = order.getProduct();
 
-        Member member = memberProduct.getMember();
-        Product product = memberProduct.getProduct();
         System.out.println("member = "+member.getUsername());
         System.out.println("product = "+product.getName());
-        System.out.println("orderAmount = "+memberProduct.getOrderAmount());
+        System.out.println("orderAmount = "+order.getOrderAmount());
 
     }
 

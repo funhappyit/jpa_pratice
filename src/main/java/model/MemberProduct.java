@@ -2,7 +2,7 @@ package model;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @IdClass(MemberProductId.class)
 public class MemberProduct {
 

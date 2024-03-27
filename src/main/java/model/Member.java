@@ -13,11 +13,16 @@ public class Member {
 
     private String username;
 
-    //역방향
     @OneToMany(mappedBy = "member")
-    private List<MemberProduct> memberProducts;
+    private List<Order> orders = new ArrayList<Order>();
 
+    public List<Order> getOrders() {
+        return orders;
+    }
 
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 
 //    @ManyToMany
 //    @JoinTable(name="MEMBER_PRODUCT",
@@ -26,29 +31,29 @@ public class Member {
 //    private List<Product> products = new ArrayList<Product>();
 
 
-    @OneToOne
-    @JoinColumn(name="LOCKET_ID")
-    private Locker locker;
+//    @OneToOne
+//    @JoinColumn(name="LOCKET_ID")
+//    private Locker locker;
+//
+//    @ManyToOne
+//    @JoinColumn(name="TEAM_ID")
+//    private Team team;
 
-    @ManyToOne
-    @JoinColumn(name="TEAM_ID")
-    private Team team;
-
-    public Locker getLocker() {
-        return locker;
-    }
-
-    public void setLocker(Locker locker) {
-        this.locker = locker;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-        //무한루프에 빠지지 않도록 체크
-        if(!team.getMembers().contains(this)){
-            team.getMembers().add(this);
-        }
-    }
+//    public Locker getLocker() {
+//        return locker;
+//    }
+//
+//    public void setLocker(Locker locker) {
+//        this.locker = locker;
+//    }
+//
+//    public void setTeam(Team team) {
+//        this.team = team;
+//        //무한루프에 빠지지 않도록 체크
+//        if(!team.getMembers().contains(this)){
+//            team.getMembers().add(this);
+//        }
+//    }
     public Member(String id, String username) {
         this.id = id;
         this.username = username;
@@ -75,9 +80,9 @@ public class Member {
         this.username = username;
     }
 
-    public Team getTeam() {
-        return team;
-    }
+//    public Team getTeam() {
+//        return team;
+//    }
 
 
 }
