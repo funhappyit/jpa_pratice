@@ -275,10 +275,26 @@ public class JpaMain {
 //        em.persist(parent);
 //    }
 
+//    public static void find(EntityManager em){
+//        ParentId parentId = new ParentId("myId1","myId2");
+//        Parent parent = em.find(Parent.class,parentId);
+//        System.out.println("parent---->"+parent.getName());
+//    }
+    public static void save(EntityManager em){
+        Parent parent = new Parent();
+        ParentId parentId = new ParentId("myId1","myId2");
+        parent.setId(parentId);
+        parent.setName("parentName");
+        em.persist(parent);
+    }
+
     public static void find(EntityManager em){
         ParentId parentId = new ParentId("myId1","myId2");
         Parent parent = em.find(Parent.class,parentId);
-        System.out.println("parent---->"+parent.getName());
+
+        System.out.println(parent);
     }
+
+
 
 }
