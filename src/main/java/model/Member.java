@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Member {
+public class Member extends BaseEntity{
 
     @Id
     @Column(name="MEMBER_ID")
@@ -13,16 +13,15 @@ public class Member {
 
     private String username;
 
-    @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<Order>();
+    // @OneToMany(mappedBy = "member")
+    // private List<Order> orders = new ArrayList<Order>();
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
+    // public List<Order> getOrders() {
+    //     return orders;
+    // }
+    // public void setOrders(List<Order> orders) {
+    //     this.orders = orders;
+    // }
 
 //    @ManyToMany
 //    @JoinTable(name="MEMBER_PRODUCT",

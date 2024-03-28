@@ -3,8 +3,8 @@ package model;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "ORDER_TABLE")
+//@Entity
+//@Table(name = "ORDER_TABLE")
 public class Order {
 
     @Id @GeneratedValue

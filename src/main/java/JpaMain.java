@@ -18,7 +18,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            find(em); //비즈니스 로직 실행
+        //    save(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             tx.rollback(); //[트랜잭션] - 롤백
@@ -223,37 +223,47 @@ public class JpaMain {
 //        System.out.println("orderAmount = "+memberProduct.getOrderAmount());
 //
 //    }
+//     public static void save(EntityManager em){
+//         //회원 저장
+//         Member member1 = new Member();
+//         member1.setId("member1");
+//         member1.setUsername("회원");
+//         em.persist(member1);
+//
+//         //상품 저장
+//         Product productA = new Product();
+//         productA.setId("productA");
+//         productA.setName("상품1");
+//         em.persist(productA);
+//
+//         //주문 저장
+//         Order order = new Order();
+//         order.setMember(member1);
+//         order.setProduct(productA);
+//         order.setOrderAmount(2);
+//         em.persist(order);
+//     }
+
+   // public static void find(EntityManager em){
+        // Long orderId = 1L;
+        // Order order = em.find(Order.class,orderId);
+        //
+        // Member member = order.getMember();
+        // Product product = order.getProduct();
+        //
+        // System.out.println("member = "+member.getUsername());
+        // System.out.println("product = "+product.getName());
+        // System.out.println("orderAmount = "+order.getOrderAmount());
+
+   // }
     public static void save(EntityManager em){
-        //회원 저장
-        Member member1 = new Member();
-        member1.setId("member1");
-        member1.setUsername("회원");
-        em.persist(member1);
-
-        //상품 저장
-        Product productA = new Product();
-        productA.setId("productA");
-        productA.setName("상품1");
-        em.persist(productA);
-
-        //주문 저장
-        Order order = new Order();
-        order.setMember(member1);
-        order.setProduct(productA);
-        order.setOrderAmount(2);
-        em.persist(order);
-    }
-
-    public static void find(EntityManager em){
-        Long orderId = 1L;
-        Order order = em.find(Order.class,orderId);
-
-        Member member = order.getMember();
-        Product product = order.getProduct();
-
-        System.out.println("member = "+member.getUsername());
-        System.out.println("product = "+product.getName());
-        System.out.println("orderAmount = "+order.getOrderAmount());
+        Movie movie = new Movie();
+        movie.setActor("송중기");
+        movie.setDirector("감독");
+        movie.setName("아이템");
+        movie.setPrice(10000);
+        movie.setStockQuantity(2);
+        em.persist(movie);
 
     }
 

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Product {
 
     @Id @Column(name="PRODUCT_ID")
