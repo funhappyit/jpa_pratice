@@ -18,7 +18,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-        //    save(em); //비즈니스 로직 실행
+            find(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             tx.rollback(); //[트랜잭션] - 롤백
@@ -256,15 +256,29 @@ public class JpaMain {
         // System.out.println("orderAmount = "+order.getOrderAmount());
 
    // }
-    public static void save(EntityManager em){
-        Movie movie = new Movie();
-        movie.setActor("송중기");
-        movie.setDirector("감독");
-        movie.setName("아이템");
-        movie.setPrice(10000);
-        movie.setStockQuantity(2);
-        em.persist(movie);
+//    public static void save(EntityManager em){
+//        Movie movie = new Movie();
+//        movie.setActor("송중기");
+//        movie.setDirector("감독");
+//        movie.setName("아이템");
+//        movie.setPrice(10000);
+//        movie.setStockQuantity(2);
+//        em.persist(movie);
+//
+//    }
 
+//    public static void save(EntityManager em){
+//        Parent parent = new Parent();
+//        parent.setId1("myId1"); //식별자
+//        parent.setId2("myId2");
+//        parent.setName("parentName");
+//        em.persist(parent);
+//    }
+
+    public static void find(EntityManager em){
+        ParentId parentId = new ParentId("myId1","myId2");
+        Parent parent = em.find(Parent.class,parentId);
+        System.out.println("parent---->"+parent.getName());
     }
 
 }
