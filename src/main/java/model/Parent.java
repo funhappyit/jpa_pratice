@@ -4,15 +4,17 @@ package model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 
+//부모
 @Entity
 public class Parent {
 
-    @Id @Column(name="PARENT_ID")
+    @Id @GeneratedValue
+    @Column(name="PARENT_ID")
     private String id;
-
     private String name;
 
     public String getName() {

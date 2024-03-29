@@ -2,22 +2,20 @@ package model;
 
 import javax.persistence.*;
 
+//손자
 @Entity
-@IdClass(GrandChildId.class)
 public class GrandChild {
 
-    @Id
+    @Id @GeneratedValue
+    @Column(name="GRANDCHILD_ID")
+    private Long id;
+    private String name;
+
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name="PARENT_ID"),
-            @JoinColumn(name="CHILD_ID")
-    })
+    @JoinColumn(name="CHILD_ID")
     private Child child;
 
-    @Id @Column(name="GRANDCHILD_ID")
-    private String id;
 
-    private String name;
 
 
 }
