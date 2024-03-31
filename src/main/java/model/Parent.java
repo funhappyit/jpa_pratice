@@ -16,11 +16,10 @@ public class Parent {
     private String id;
     private String name;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name="PARENT_CHILD",
-                joinColumns = @JoinColumn(name="PARENT_ID"),
-                inverseJoinColumns = @JoinColumn(name="CHILD_ID")
-    )
+            joinColumns = @JoinColumn(name="PARENT_ID"),
+            inverseJoinColumns = @JoinColumn(name="CHILD_ID"))
     private List<Child> child = new ArrayList<>();
 
     public String getId() {
