@@ -2,14 +2,14 @@ package model;
 
 import javax.persistence.*;
 
-//@Entity
+@Entity
 public class Child {
 
     @Id @GeneratedValue
-    @Column(name="CHILD_ID")
     private Long id;
-    private String name;
 
+    @ManyToOne
+    private Parent parent;
 
     public Long getId() {
         return id;
@@ -19,11 +19,11 @@ public class Child {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Parent getParent() {
+        return parent;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setParent(Parent parent) {
+        this.parent = parent;
     }
 }

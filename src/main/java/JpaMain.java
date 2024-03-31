@@ -18,10 +18,12 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            printUserAndTeam(em); //비즈니스 로직 실행
+            remove(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
+            System.out.println(e.getMessage());
             tx.rollback(); //[트랜잭션] - 롤백
+
         }finally {
             em.close(); //[엔티티 메니저] - 종료
         }
@@ -51,7 +53,13 @@ public class JpaMain {
 //        String jpq1 = "select m from Member m join m.team t where "+"t.name=:teamName";
 //
 //        List<Member> resultList = em.createQuery(jpq1,Member.class)
-//                .setParameter("teamName","팀1")
+//                .setParameter("teamName"
+//    //JPQL 조인 검색
+////    private static void queryLogicJoin(EntityManager em){
+////        String jpq1 = "select m from Member m join m.team t where "+"t.name=:teamName";
+////
+////        List<Member> resultList = em.createQuery(jpq1,Member.class)
+////                .setParameter("teamName","팀1"),"팀1")
 //                .getResultList();
 //
 //        for(Member member:resultList){
@@ -310,9 +318,50 @@ public class JpaMain {
         Team team = member.getTeam();
         System.out.println("회원이름:"+member.getUsername());
         System.out.println("소속팀:"+team.getName());
-
-
     }
+
+    public static void saveNoCascade(EntityManager em){
+        //부모 저장
+        Parent parent = new Parent();
+        em.persist(parent);
+
+        //1번 자식 저장
+        Child child = new Child();
+        child.setParent(parent); //자식 -> 부모 연관관계 설정
+        parent.getChildren().add(child); //부모->자식
+        em.persist(child);
+
+        //2번 자식 저장
+        Child child2 = new Child();
+        child2.setParent(parent);
+        parent.getChildren().add(child2);
+        em.persist(child2);
+    }
+
+    private static void saveWithCasecade(EntityManager em){
+        Child child1 = new Child();
+        Child child2 = new Child();
+
+        Parent parent = new Parent();
+        child1.setParent(parent); //연관관계 추가
+        child2.setParent(parent); //연관관계 추가
+        parent.getChildren().add(child1);
+        parent.getChildren().add(child2);
+
+        em.persist(parent);
+    }
+    private static void remove(EntityManager em){
+        Parent findParent = em.find(Parent.class,1L);
+        Child findChild1 = em.find(Child.class,2L);
+        Child findChild2 = em.find(Child.class,3L);
+
+        em.remove(findChild1);
+        em.remove(findChild2);
+        em.remove(findParent);
+   //     findParent.getChildren().clear();
+    }
+
+
 
 
 }

@@ -8,41 +8,28 @@ import java.util.List;
 
 
 //부모
-//@Entity
+@Entity
 public class Parent {
 
     @Id @GeneratedValue
-    @Column(name="PARENT_ID")
-    private String id;
-    private String name;
+    private Long id;
 
-    @ManyToMany
-    @JoinTable(name="PARENT_CHILD",
-            joinColumns = @JoinColumn(name="PARENT_ID"),
-            inverseJoinColumns = @JoinColumn(name="CHILD_ID"))
-    private List<Child> child = new ArrayList<>();
+    @OneToMany(mappedBy = "parent",orphanRemoval = true)
+    private List<Child> children = new ArrayList<>();
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public List<Child> getChild() {
-        return child;
+    public List<Child> getChildren() {
+        return children;
     }
 
-    public void setChild(List<Child> child) {
-        this.child = child;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setChildren(List<Child> children) {
+        this.children = children;
     }
 }
