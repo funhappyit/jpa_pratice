@@ -13,24 +13,6 @@ public class Team {
 
     private String name;
 
-    @OneToMany(mappedBy = "team")
-    private List<Member> members = new ArrayList<Member>();
-
-//    public void addMember(Member member){
-//        this.members.add(member);
-//        if(member.getTeam() != this){ //무한루프에 빠지지 않도록 체크
-//            member.setTeam(this);
-//        }
-//    }
-
-    public List<Member> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<Member> members) {
-        this.members = members;
-    }
-
     public Team(String id, String name) {
         this.id = id;
         this.name = name;

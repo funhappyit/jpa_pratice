@@ -18,7 +18,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-   //         save(em); //비즈니스 로직 실행
+            printUserAndTeam(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             tx.rollback(); //[트랜잭션] - 롤백
@@ -81,30 +81,30 @@ public class JpaMain {
 
     //일대다 방향으로 객체 그래프 탐색
     public static void biDirection(EntityManager em){
-        Team team = em.find(Team.class,"team1");
-        List<Member> members = team.getMembers(); //(팀->회원) 객체 그래프 탐색
-
-        for(Member member:members){
-            System.out.println("member.username"+member.getUsername());
-        }
+//        Team team = em.find(Team.class,"team1");
+//        List<Member> members = team.getMembers(); //(팀->회원) 객체 그래프 탐색
+//
+//        for(Member member:members){
+//            System.out.println("member.username"+member.getUsername());
+//        }
     }
 
     //양방향 연관관계의 주의점
     public static void testSaveNonOwner(EntityManager em){
         //회원1 저장
-        Member member1 = new Member("member1","회원1");
-        em.persist(member1);
-
-        //회원2 저장
-        Member member2 = new Member("member2","회원2");
-        em.persist(member2);
-
-        Team team1 = new Team("team1","팀1");
-        //주인이 아닌 곳만 연관관계 설정
-        team1.getMembers().add(member1);
-        team1.getMembers().add(member2);
-
-        em.persist(team1);
+//        Member member1 = new Member("member1","회원1");
+//        em.persist(member1);
+//
+//        //회원2 저장
+//        Member member2 = new Member("member2","회원2");
+//        em.persist(member2);
+//
+//        Team team1 = new Team("team1","팀1");
+//        //주인이 아닌 곳만 연관관계 설정
+//        team1.getMembers().add(member1);
+//        team1.getMembers().add(member2);
+//
+//        em.persist(team1);
 
     }
 
@@ -305,4 +305,14 @@ public class JpaMain {
         boardDetail.setBoard(board);
         em.persist(boardDetail);
     }
+    public static void printUserAndTeam(EntityManager em){
+        Member member = em.find(Member.class,"member1");
+        Team team = member.getTeam();
+        System.out.println("회원이름:"+member.getUsername());
+        System.out.println("소속팀:"+team.getName());
+
+
+    }
+
+
 }
