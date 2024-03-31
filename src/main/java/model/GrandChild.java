@@ -3,7 +3,7 @@ package model;
 import javax.persistence.*;
 
 //손자
-@Entity
+//@Entity
 public class GrandChild {
 
     @Id @GeneratedValue

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 
 //부모
-@Entity
+//@Entity
 public class Parent {
 
     @Id @GeneratedValue
