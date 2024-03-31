@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 //부모
-@Entity
+//@Entity
 public class Board {
 
     @Id @GeneratedValue
