@@ -8,7 +8,7 @@ import java.util.List;
 
 
 //부모
-@Entity
+//@Entity
 public class Parent {
 
     @Id @GeneratedValue

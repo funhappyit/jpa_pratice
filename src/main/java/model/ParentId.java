@@ -6,7 +6,7 @@ import javax.persistence.EmbeddedId;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
+//@Embeddable
 public class ParentId implements Serializable {
     @Column(name="PARENT_ID1")
     private String id1;

@@ -18,7 +18,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            remove(em); //비즈니스 로직 실행
+            save(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -303,21 +303,21 @@ public class JpaMain {
         System.out.println(parent);
     }
 
-    public static void save(EntityManager em){
-        Board board = new Board();
-        board.setTitle("제목");
-        em.persist(board);
-
-        BoardDetail boardDetail = new BoardDetail();
-        boardDetail.setContent("내용");
-        boardDetail.setBoard(board);
-        em.persist(boardDetail);
-    }
+//    public static void save(EntityManager em){
+//        Board board = new Board();
+//        board.setTitle("제목");
+//        em.persist(board);
+//
+//        BoardDetail boardDetail = new BoardDetail();
+//        boardDetail.setContent("내용");
+//        boardDetail.setBoard(board);
+//        em.persist(boardDetail);
+//    }
     public static void printUserAndTeam(EntityManager em){
-        Member member = em.find(Member.class,"member1");
-        Team team = member.getTeam();
-        System.out.println("회원이름:"+member.getUsername());
-        System.out.println("소속팀:"+team.getName());
+//        Member member = em.find(Member.class,"member1");
+//        Team team = member.getTeam();
+//        System.out.println("회원이름:"+member.getUsername());
+//        System.out.println("소속팀:"+team.getName());
     }
 
     public static void saveNoCascade(EntityManager em){
@@ -359,6 +359,20 @@ public class JpaMain {
         em.remove(findChild2);
         em.remove(findParent);
    //     findParent.getChildren().clear();
+    }
+    private static void save(EntityManager em){
+        Member member = new Member();
+        member.setHomeAddress(null);
+        em.persist(member);
+    }
+
+    private static void use(EntityManager em){
+        Member member = new Member();
+        Member member2 = new Member();
+        Address address = member.getHomeAddress();
+        //회원 1의 주소값을 조회해서 새로운 주소값을 생성
+        Address newAddress = new Address(address.getCity());
+        member2.setHomeAddress(newAddress);
     }
 
 
