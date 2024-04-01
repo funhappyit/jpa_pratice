@@ -9,7 +9,7 @@ public class Member{
 
     private String name;
 
-    @Embedded Period workPeriod; // 근무 시간
-    @Embedded Address homeAddress;// 집 주조
+    @Embedded Address address;//임베디드 타입 포함
+    @Embedded PhoneNumber phoneNumber; //임베디드 타입 포함
 
 }
