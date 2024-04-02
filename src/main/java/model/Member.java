@@ -18,13 +18,13 @@ public class Member{
 
     @Embedded Address homeAddress;//임베디드 타입 포함
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name="FAVORITE_FOODS",
         joinColumns = @JoinColumn(name="MEMBER_ID"))
     @Column(name="FOOD_NAME")
     private Set<String> favoriteFoods = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name="ADDRESS",
         joinColumns = @JoinColumn(name="MEMBER_ID"))
     private List<Address> addressHistory = new ArrayList<>();

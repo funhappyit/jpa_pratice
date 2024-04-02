@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
+import java.util.Set;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            save(em); //비즈니스 로직 실행
+            update(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -296,12 +297,12 @@ public class JpaMain {
 //        em.persist(parent);
 //    }
 
-    public static void find(EntityManager em){
-        ParentId parentId = new ParentId("myId1","myId2");
-        Parent parent = em.find(Parent.class,parentId);
-
-        System.out.println(parent);
-    }
+//    public static void find(EntityManager em){
+//        ParentId parentId = new ParentId("myId1","myId2");
+//        Parent parent = em.find(Parent.class,parentId);
+//
+//        System.out.println(parent);
+//    }
 
 //    public static void save(EntityManager em){
 //        Board board = new Board();
@@ -377,14 +378,46 @@ public class JpaMain {
         em.persist(member);
     }
 
-    private static void use(EntityManager em){
+   // private static void use(EntityManager em){
         // Member member = new Member();
         // Member member2 = new Member();
         // Address address = member.getHomeAddress();
         // //회원 1의 주소값을 조회해서 새로운 주소값을 생성
         // Address newAddress = new Address(address.getCity());
         // member2.setHomeAddress(newAddress);
+   // }
+
+    public static void find(EntityManager em){
+        Member member = em.find(Member.class,1L);
+        Address homeAddress = member.getHomeAddress();
+        Set<String> favoriteFoods = member.getFavoriteFoods();
+        for(String favoriteFood:favoriteFoods){
+            System.out.println("favoriteFood = "+favoriteFood);
+        }
+        List<Address> addressHistory = member.getAddressHistory();
+        addressHistory.get(0);
+
     }
+    public static void update(EntityManager em){
+        Member member = em.find(Member.class,1L);
+
+        //1.임베디드 값 타입 수정
+        member.setHomeAddress(new Address("새로운도시","신도시","123456"));
+
+        //2.기본값 타입 컬렉션 수정
+        Set<String> favoriteFoods = member.getFavoriteFoods();
+        favoriteFoods.remove("탕수육");
+        favoriteFoods.add("치킨");
+
+        //3.임베디드 값 타입 컬렉션 수정
+        List<Address> addressHistory = member.getAddressHistory();
+        addressHistory.remove(new Address("서울","기존 주소","123-123"));
+        addressHistory.add(new Address("새로운도시","신도시","123456"));
+
+
+   }
+
+
 
 
 
