@@ -3,25 +3,25 @@ package model;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
+import javax.persistence.Entity;
 
 @Embeddable
-@Access(AccessType.FIELD)
 public class Address {
 
+    @Column
     private String city;
+    private String street;
+    private String zipcode;
 
-    protected Address(){}//JPA에서 기본 생성자는 필수다.
+	public Address(String city, String street, String zipcode) {
+		this.city = city;
+		this.street = street;
+		this.zipcode = zipcode;
+	}
 
-    //생성자로 초기 값을 설정한다.
-    public Address(String city){
-        this.city = city;
-    }
+	public Address() {
 
-    public String getCity() {
-        return city;
-    }
-
-
+	}
 }

@@ -1,4 +1,9 @@
 package model;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,17 +13,21 @@ public class Member{
     @Column(name="member_id")
     @GeneratedValue
     private Long id;
+
     private String name;
 
     @Embedded Address homeAddress;//임베디드 타입 포함
 
-    //@AttributeOverride로 속성 재정의
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="city",column = @Column(name="COMPANY_CITY")),
-            @AttributeOverride(name="street",column = @Column(name="COMPANY_STREET"))
-    })
-    Address companyAddress;
+    @ElementCollection
+    @CollectionTable(name="FAVORITE_FOODS",
+        joinColumns = @JoinColumn(name="MEMBER_ID"))
+    @Column(name="FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
+
+    @ElementCollection
+    @CollectionTable(name="ADDRESS",
+        joinColumns = @JoinColumn(name="MEMBER_ID"))
+    private List<Address> addressHistory = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -44,11 +53,19 @@ public class Member{
         this.homeAddress = homeAddress;
     }
 
-    public Address getCompanyAddress() {
-        return companyAddress;
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
     }
 
-    public void setCompanyAddress(Address companyAddress) {
-        this.companyAddress = companyAddress;
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<Address> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<Address> addressHistory) {
+        this.addressHistory = addressHistory;
     }
 }

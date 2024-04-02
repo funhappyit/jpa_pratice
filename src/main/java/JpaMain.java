@@ -362,17 +362,28 @@ public class JpaMain {
     }
     private static void save(EntityManager em){
         Member member = new Member();
-        member.setHomeAddress(null);
+       //임베디드 값 타입
+        member.setHomeAddress(new Address("통영","몽돌해수욕장","660-123"));
+
+        //기본값 타입 컬렉션
+        member.getFavoriteFoods().add("짬뽕");
+        member.getFavoriteFoods().add("짜장");
+        member.getFavoriteFoods().add("탕수육");
+
+        //임베디드 값 타입 컬렉션
+        member.getAddressHistory().add(new Address("서울","강남","123-123"));
+        member.getAddressHistory().add(new Address("서울","강북","000-000"));
+
         em.persist(member);
     }
 
     private static void use(EntityManager em){
-        Member member = new Member();
-        Member member2 = new Member();
-        Address address = member.getHomeAddress();
-        //회원 1의 주소값을 조회해서 새로운 주소값을 생성
-        Address newAddress = new Address(address.getCity());
-        member2.setHomeAddress(newAddress);
+        // Member member = new Member();
+        // Member member2 = new Member();
+        // Address address = member.getHomeAddress();
+        // //회원 1의 주소값을 조회해서 새로운 주소값을 생성
+        // Address newAddress = new Address(address.getCity());
+        // member2.setHomeAddress(newAddress);
     }
 
 
