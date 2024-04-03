@@ -16,18 +16,10 @@ public class Member{
 
     private String name;
 
-    @Embedded Address homeAddress;//임베디드 타입 포함
+    private String city;
+    private String street;
+    private String zipcode;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="FAVORITE_FOODS",
-        joinColumns = @JoinColumn(name="MEMBER_ID"))
-    @Column(name="FOOD_NAME")
-    private Set<String> favoriteFoods = new HashSet<>();
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name="ADDRESS",
-        joinColumns = @JoinColumn(name="MEMBER_ID"))
-    private List<Address> addressHistory = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -45,27 +37,27 @@ public class Member{
         this.name = name;
     }
 
-    public Address getHomeAddress() {
-        return homeAddress;
+    public String getCity() {
+        return city;
     }
 
-    public void setHomeAddress(Address homeAddress) {
-        this.homeAddress = homeAddress;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public Set<String> getFavoriteFoods() {
-        return favoriteFoods;
+    public String getStreet() {
+        return street;
     }
 
-    public void setFavoriteFoods(Set<String> favoriteFoods) {
-        this.favoriteFoods = favoriteFoods;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public List<Address> getAddressHistory() {
-        return addressHistory;
+    public String getZipcode() {
+        return zipcode;
     }
 
-    public void setAddressHistory(List<Address> addressHistory) {
-        this.addressHistory = addressHistory;
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
     }
 }

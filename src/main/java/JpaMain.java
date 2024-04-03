@@ -1,9 +1,9 @@
 import model.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +19,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            update(em); //비즈니스 로직 실행
+            query(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -362,20 +362,20 @@ public class JpaMain {
    //     findParent.getChildren().clear();
     }
     private static void save(EntityManager em){
-        Member member = new Member();
-       //임베디드 값 타입
-        member.setHomeAddress(new Address("통영","몽돌해수욕장","660-123"));
-
-        //기본값 타입 컬렉션
-        member.getFavoriteFoods().add("짬뽕");
-        member.getFavoriteFoods().add("짜장");
-        member.getFavoriteFoods().add("탕수육");
-
-        //임베디드 값 타입 컬렉션
-        member.getAddressHistory().add(new Address("서울","강남","123-123"));
-        member.getAddressHistory().add(new Address("서울","강북","000-000"));
-
-        em.persist(member);
+//        Member member = new Member();
+//       //임베디드 값 타입
+//        member.setHomeAddress(new Address("통영","몽돌해수욕장","660-123"));
+//
+//        //기본값 타입 컬렉션
+//        member.getFavoriteFoods().add("짬뽕");
+//        member.getFavoriteFoods().add("짜장");
+//        member.getFavoriteFoods().add("탕수육");
+//
+//        //임베디드 값 타입 컬렉션
+//        member.getAddressHistory().add(new Address("서울","강남","123-123"));
+//        member.getAddressHistory().add(new Address("서울","강북","000-000"));
+//
+//        em.persist(member);
     }
 
    // private static void use(EntityManager em){
@@ -387,35 +387,85 @@ public class JpaMain {
         // member2.setHomeAddress(newAddress);
    // }
 
-    public static void find(EntityManager em){
-        Member member = em.find(Member.class,1L);
-        Address homeAddress = member.getHomeAddress();
-        Set<String> favoriteFoods = member.getFavoriteFoods();
-        for(String favoriteFood:favoriteFoods){
-            System.out.println("favoriteFood = "+favoriteFood);
-        }
-        List<Address> addressHistory = member.getAddressHistory();
-        addressHistory.get(0);
+ //   public static void find(EntityManager em){
+//        Member member = em.find(Member.class,1L);
+//        Address homeAddress = member.getHomeAddress();
+//        Set<String> favoriteFoods = member.getFavoriteFoods();
+//        for(String favoriteFood:favoriteFoods){
+//            System.out.println("favoriteFood = "+favoriteFood);
+//        }
+//        List<Address> addressHistory = member.getAddressHistory();
+//        addressHistory.get(0);
 
-    }
+  //  }
     public static void update(EntityManager em){
-        Member member = em.find(Member.class,1L);
-
-        //1.임베디드 값 타입 수정
-        member.setHomeAddress(new Address("새로운도시","신도시","123456"));
-
-        //2.기본값 타입 컬렉션 수정
-        Set<String> favoriteFoods = member.getFavoriteFoods();
-        favoriteFoods.remove("탕수육");
-        favoriteFoods.add("치킨");
-
-        //3.임베디드 값 타입 컬렉션 수정
-        List<Address> addressHistory = member.getAddressHistory();
-        addressHistory.remove(new Address("서울","기존 주소","123-123"));
-        addressHistory.add(new Address("새로운도시","신도시","123456"));
+//        Member member = em.find(Member.class,1L);
+//
+//        //1.임베디드 값 타입 수정
+//        member.setHomeAddress(new Address("새로운도시","신도시","123456"));
+//
+//        //2.기본값 타입 컬렉션 수정
+//        Set<String> favoriteFoods = member.getFavoriteFoods();
+//        favoriteFoods.remove("탕수육");
+//        favoriteFoods.add("치킨");
+//
+//        //3.임베디드 값 타입 컬렉션 수정
+//        List<Address> addressHistory = member.getAddressHistory();
+//        addressHistory.remove(new Address("서울","기존 주소","123-123"));
+//        addressHistory.add(new Address("새로운도시","신도시","123456"));
 
 
    }
+//    public static void find(EntityManager em){
+//        //쿼리 생성
+//        String jpql = "select m from Member as m where m.name='kim'";
+//        List<Member> resultList = em.createQuery(jpql,Member.class).getResultList();
+//        System.out.println(resultList);
+//
+//    }
+    public static void criteriaFind(EntityManager em){
+        //Criteria 사용 준비
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> query = cb.createQuery(Member.class);
+
+
+        //루트 클래스(조회를 시작할 클래스)
+        Root<Member> m = query.from(Member.class);
+
+        //쿼리 실행
+        CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("name"),"kim"));
+        List<Member> resultList = em.createQuery(cq).getResultList();
+
+    }
+    public static void queryDSL(EntityManager em){
+        //준비
+    }
+    public static void nativeSQL(EntityManager em){
+        String sql = "SELECT ID,AGE,TEAM_ID,NAME FROM MEMBER WHERE NAME='kim'";
+        List<Member> resultList = em.createNativeQuery(sql,Member.class).getResultList();
+
+    }
+
+//    public static void typeQuery(EntityManager em){
+//        TypedQuery<Member>  query = em.createQuery("SELECT m FROM Member m",Member.class);
+//        List<Member> resultList = query.getResultList();
+//        for(Member member:resultList){
+//            System.out.println("member city="+member.getCity()+"street=>"+member.getStreet()+"zipcode"+member.getZipcode());
+//        }
+//    }
+    public static void query(EntityManager em){
+        Query query = em.createQuery("SELECT m.name,m.zipcode from Member m");
+        List resultList = query.getResultList();
+        for(Object o :resultList){
+            Object[] result = (Object[]) o; //결과가 둘 이상이면 Object[] 반환
+            System.out.println("username="+result[0]);
+            System.out.println("age = "+result[1]);
+        }
+    }
+
+
+
+
 
 
 
