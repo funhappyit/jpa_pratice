@@ -19,7 +19,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            query(em); //비즈니스 로직 실행
+            paramPositionQuery(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -460,6 +460,27 @@ public class JpaMain {
             Object[] result = (Object[]) o; //결과가 둘 이상이면 Object[] 반환
             System.out.println("username="+result[0]);
             System.out.println("age = "+result[1]);
+        }
+    }
+    public static void paramQuery(EntityManager em){
+        String usernameParam = "test";
+        TypedQuery<Member> query = em.createQuery("SELECT m FROM Member m where m.name=:name",
+                Member.class);
+        query.setParameter("name",usernameParam);
+        List<Member> resultList = query.getResultList();
+        for(int i=0;i<resultList.size();i++){
+            System.out.println(resultList.get(i).getCity());
+        }
+
+    }
+
+    public static void paramPositionQuery(EntityManager em){
+        String usernameParam = "test";
+        List<Member> members = em.createQuery("SELECT m FROM Member m where m.name=?1",Member.class)
+                            .setParameter(1,usernameParam)
+                .getResultList();
+        for(int i=0;i<members.size();i++){
+            System.out.println(members.get(i).getCity());
         }
     }
 
