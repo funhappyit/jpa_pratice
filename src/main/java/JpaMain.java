@@ -1,9 +1,12 @@
 import model.*;
+import org.h2.engine.User;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +22,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            paramPositionQuery(em); //비즈니스 로직 실행
+            paramManyQuery(em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -483,14 +486,45 @@ public class JpaMain {
             System.out.println(members.get(i).getCity());
         }
     }
+    public static void paramManyQuery(EntityManager em){
+        Query query = em.createQuery("SELECT m.name,m.city FROM Member m");
+        List resultList = query.getResultList();
 
+        Iterator iterator = resultList.iterator();
+        while(iterator.hasNext()){
+            Object[] row = (Object[]) iterator.next();
+            String username = (String)row[0];
+            String city = (String) row[1];
+            System.out.println("username---->"+username);
+            System.out.println("city-------->"+city);
+        }
+    }
 
+    private static List<UserDTO> newUseAgo(EntityManager em){
+        List<Object[]> resultList = em.createQuery("SELECT m.name,m.city FROM Member m").getResultList();
 
+        //객체 변환 작업
+        List<UserDTO> userDTOS = new ArrayList<UserDTO>();
+        for(Object[] row:resultList){
+            UserDTO userDTO = new UserDTO((String)row[0],(String)row[1]);
+            userDTOS.add(userDTO);
+        }
+        return userDTOS;
+    }
+    //New 명령어 사용후
+    private static void newUseAfter(EntityManager em){
+     TypedQuery<UserDTO> query = em.createQuery("SELECT new model.UserDTO(m.name,m.city) FROM Member m",UserDTO.class);
+     List<UserDTO> resultList = query.getResultList();
+    }
+    //페이징 API
+    private static void pageingAPI(EntityManager em){
+        TypedQuery<Member> query = em.createQuery("SELECT m FROM Member m ORDER BY m.name DESC ",Member.class);
 
+        query.setFirstResult(10);
+        query.setMaxResults(20);
+        query.getResultList();
 
-
-
-
+    }
 
 
 }
