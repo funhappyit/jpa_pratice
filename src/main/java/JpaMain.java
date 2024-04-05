@@ -22,7 +22,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            paramManyQuery(em); //비즈니스 로직 실행
+            InnerJoin (em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -525,6 +525,38 @@ public class JpaMain {
         query.getResultList();
 
     }
+    //집합과 정렬
+    private static void groupByAPI(EntityManager em){
+        Query query = em.createQuery("select t.name,COUNT(m.age),SUM(m.age),AVG(m.age),MAX(m.age),MIN(m.age) from Member m LEFT JOIN m.team t GROUP BY t.name");
+        List resultList = query.getResultList();
+
+        Iterator iterator = resultList.iterator();
+        while(iterator.hasNext()){
+            Object[] row = (Object[]) iterator.next();
+            System.out.println(row[0]);
+            System.out.println(row[1]);
+            System.out.println(row[2]);
+            System.out.println(row[3]);
+            System.out.println(row[4]);
+            System.out.println(row[5]);
+
+        }
+    }
+
+
+    private static void InnerJoin(EntityManager em){
+        String teamName = "팀A";
+        String query = "SELECT m FROM Member m INNER JOIN m.team t WHERE t.name = :teamName";
+
+        List<Member> members = em.createQuery(query,Member.class)
+                .setParameter("teamName",teamName)
+                .getResultList();
+
+        for(Member member:members){
+            System.out.println("[query] member.username="+member.getZipcode());
+        }
+    }
+
 
 
 }

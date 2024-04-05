@@ -14,12 +14,33 @@ public class Member{
     @GeneratedValue
     private Long id;
 
+    private int age;
+
     private String name;
 
     private String city;
     private String street;
     private String zipcode;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="TEAM_ID")
+    private Team team;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     public Long getId() {
         return id;
