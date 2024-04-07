@@ -22,7 +22,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            InnerJoin (em); //비즈니스 로직 실행
+            CollectionFetchJoin (em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -526,37 +526,74 @@ public class JpaMain {
 
     }
     //집합과 정렬
-    private static void groupByAPI(EntityManager em){
-        Query query = em.createQuery("select t.name,COUNT(m.age),SUM(m.age),AVG(m.age),MAX(m.age),MIN(m.age) from Member m LEFT JOIN m.team t GROUP BY t.name");
-        List resultList = query.getResultList();
+//    private static void groupByAPI(EntityManager em){
+//        Query query = em.createQuery("select t.name,COUNT(m.age),SUM(m.age),AVG(m.age),MAX(m.age),MIN(m.age) from Member m LEFT JOIN m.team t GROUP BY t.name");
+//        List resultList = query.getResultList();
+//
+//        Iterator iterator = resultList.iterator();
+//        while(iterator.hasNext()){
+//            Object[] row = (Object[]) iterator.next();
+//            System.out.println(row[0]);
+//            System.out.println(row[1]);
+//            System.out.println(row[2]);
+//            System.out.println(row[3]);
+//            System.out.println(row[4]);
+//            System.out.println(row[5]);
+//
+//        }
+//    }
+//
+//
+//    private static void InnerJoin(EntityManager em){
+//        String teamName = "팀A";
+//        String query = "SELECT m FROM Member m INNER JOIN m.team t WHERE t.name = :teamName";
+//
+//        List<Member> members = em.createQuery(query,Member.class)
+//                .setParameter("teamName",teamName)
+//                .getResultList();
+//
+//        for(Member member:members){
+//            System.out.println("[query] member.username="+member.getZipcode());
+//        }
+//    }
+//
+//    private static void InnerJoin2(EntityManager em){
+//        String teamName = "팀A";
+//        String query = "SELECT m,t FROM Member m JOIN m.team t";
+//        List<Object[]> result = em.createQuery(query).getResultList();
+//        for(Object[] row:result){
+//            Member member = (Member) row[0];
+//            Team team = (Team) row[1];
+//            System.out.println("member_id"+member.getId()+"age"+member.getAge()+"city"+member.getCity()+"name"+member
+//            .getName());
+//            System.out.println("street"+member.getStreet()+"team_id"+member.getTeam());
+//            System.out.println("team_id"+team.getId()+"name"+team.getName());
+//
+//        }
+//
+//    }
+//
+//    private static void FetchJoin(EntityManager em){
+//        String jpql = "select m from Member m join fetch m.team";
+//        List<Member> members = em.createQuery(jpql,Member.class).getResultList();
+//        for(Member member:members){
+//            //페치 조인으로 회원과 팀을 함께 조회해서 지연 로딩 발생 안함
+//            System.out.println("name="+member.getName()+","+"teamname="+member.getTeam().getName());
+//        }
+//    }
 
-        Iterator iterator = resultList.iterator();
-        while(iterator.hasNext()){
-            Object[] row = (Object[]) iterator.next();
-            System.out.println(row[0]);
-            System.out.println(row[1]);
-            System.out.println(row[2]);
-            System.out.println(row[3]);
-            System.out.println(row[4]);
-            System.out.println(row[5]);
+    private static void CollectionFetchJoin(EntityManager em){
+        String jpql = "select distinct t from Team t join fetch t.members where t.name='팀A'";
+        List<Team> teams = em.createQuery(jpql,Team.class).getResultList();
+        for(Team team:teams){
+            System.out.println("teamname = "+team.getName()+", team="+team);
+            for(Member member : team.getMembers()){
+                //패치 조인으로 팀과 회원을 함께 조회해서 지연 로딩 발생 안함
+                 System.out.println("username="+member.getName()+"member="+member);
+            }
 
         }
     }
-
-
-    private static void InnerJoin(EntityManager em){
-        String teamName = "팀A";
-        String query = "SELECT m FROM Member m INNER JOIN m.team t WHERE t.name = :teamName";
-
-        List<Member> members = em.createQuery(query,Member.class)
-                .setParameter("teamName",teamName)
-                .getResultList();
-
-        for(Member member:members){
-            System.out.println("[query] member.username="+member.getZipcode());
-        }
-    }
-
 
 
 }
