@@ -13,17 +13,17 @@ public class Team {
 
     private String name;
 
-    @OneToMany
-    @JoinColumn(name="TEAM_ID")
-    private List<Member> members = new ArrayList<>();
+//    @OneToMany
+//    @JoinColumn(name="TEAM_ID")
+//    private List<Member> members = new ArrayList<>();
 
-    public List<Member> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<Member> members) {
-        this.members = members;
-    }
+//    public List<Member> getMembers() {
+//        return members;
+//    }
+//
+//    public void setMembers(List<Member> members) {
+//        this.members = members;
+//    }
 
     public Team(String id, String name) {
         this.id = id;

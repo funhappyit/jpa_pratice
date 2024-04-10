@@ -2,9 +2,8 @@ import model.*;
 import org.h2.engine.User;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import javax.persistence.criteria.Order;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +21,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            CollectionFetchJoin (em); //비즈니스 로직 실행
+            joinQuery (em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -582,18 +581,156 @@ public class JpaMain {
 //        }
 //    }
 
-    private static void CollectionFetchJoin(EntityManager em){
-        String jpql = "select distinct t from Team t join fetch t.members where t.name='팀A'";
-        List<Team> teams = em.createQuery(jpql,Team.class).getResultList();
-        for(Team team:teams){
-            System.out.println("teamname = "+team.getName()+", team="+team);
-            for(Member member : team.getMembers()){
-                //패치 조인으로 팀과 회원을 함께 조회해서 지연 로딩 발생 안함
-                 System.out.println("username="+member.getName()+"member="+member);
-            }
+//    private static void CollectionFetchJoin(EntityManager em){
+//        String jpql = "select distinct t from Team t join fetch t.members where t.name='팀A'";
+//        List<Team> teams = em.createQuery(jpql,Team.class).getResultList();
+//        for(Team team:teams){
+//            System.out.println("teamname = "+team.getName()+", team="+team);
+//            for(Member member : team.getMembers()){
+//                //패치 조인으로 팀과 회원을 함께 조회해서 지연 로딩 발생 안함
+//                 System.out.println("username="+member.getName()+"member="+member);
+//            }
+//
+//        }
+//    }
+    private static void CriteriaQuery(EntityManager em){
+        CriteriaBuilder cb = em.getCriteriaBuilder(); //Criteria 쿼리 빌더
 
-        }
+        //Criteria 생성, 반환 타입 지정
+        CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+
+        Root<Member> m = cq.from(Member.class);
+        cq.select(m);
+
+        TypedQuery<Member> query = em.createQuery(cq);
+        List<Member> members = query.getResultList();
     }
+    private static void CriteriaSearchQuery(EntityManager em){
+         CriteriaBuilder cb = em.getCriteriaBuilder();
+
+         CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+
+         Root<Member> m = cq.from(Member.class);
+
+         //검색 조건 정의
+        Predicate usernameEqual = cb.equal(m.get("name"),"회원1");
+
+        Order ageDesc = cb.desc(m.get("age"));
+
+        //쿼리 생성
+        cq.select(m)
+                .where(usernameEqual)
+                .orderBy(ageDesc);
+
+        List<Member> resultList = em.createQuery(cq).getResultList();
+   }
+   private static void CriteriaTuple(EntityManager em){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Tuple> cq = cb.createTupleQuery();
+
+        Root<Member> m = cq.from(Member.class);
+        cq.multiselect(
+                m.get("name").alias("username"),
+                m.get("age").alias("age")
+        );
+        TypedQuery<Tuple> query = em.createQuery(cq);
+        List<Tuple> resultlist= query.getResultList();
+        for(Tuple tuple : resultlist){
+            //튜플 별칭으로 조회
+            String username = tuple.get("username",String.class);
+            Integer age = tuple.get("age",Integer.class);
+            System.out.println("username=====>"+username+"age=======>"+age);
+        }
+   }
+   private static void TupleEntitySearch(EntityManager em){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Tuple> cq = cb.createTupleQuery();
+        Root<Member> m = cq.from(Member.class);
+        cq.select(cb.tuple(
+                m.alias("m"),//회원 엔티티, 별칭 m
+                m.get("name").alias("username") //단순 값 조회
+        ));
+        TypedQuery<Tuple> query = em.createQuery(cq);
+        List<Tuple> resultList = query.getResultList();
+        for(Tuple tuple:resultList){
+            Member member = tuple.get("m",Member.class);
+            String username = tuple.get("username",String.class);
+            System.out.println("member=======>"+member+"====username==========>"+username);
+        }
+   }
+   private static void GroupBy(EntityManager em){
+       CriteriaBuilder cb = em.getCriteriaBuilder();
+       CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+       Root<Member> m = cq.from(Member.class);
+
+       Expression maxAge = cb.max(m.<Integer>get("age"));
+       Expression minAge = cb.min(m.<Integer>get("age"));
+
+       cq.multiselect(m.get("team").get("name"),maxAge,minAge);
+       cq.groupBy(m.get("team").get("name"));
+
+        TypedQuery<Object[]> query = em.createQuery(cq);
+        List<Object[]> resultList = query.getResultList();
+       for(Object[] row:resultList){
+            Object member = (Object) row[0];
+           Object maage = (Object) row[1];
+//            Team team = (Team) row[1];
+            System.out.println("member_team_name"+member+"member maxAge"+maage);
+//            .getName());
+//            System.out.println("street"+member.getStreet()+"team_id"+member.getTeam());
+//            System.out.println("team_id"+team.getId()+"name"+team.getName());
+//
+//        }
+       }
+   }
+   private static void having(EntityManager em){
+       CriteriaBuilder cb = em.getCriteriaBuilder();
+       CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+       Root<Member> m = cq.from(Member.class);
+
+       Expression maxAge = cb.max(m.<Integer>get("age"));
+       Expression minAge = cb.min(m.<Integer>get("age"));
+
+       cq.multiselect(m.get("team").get("name"),maxAge,minAge);
+       cq.groupBy(m.get("team").get("name"))
+       .having(cb.gt(minAge,10));
+
+       TypedQuery<Object[]> query = em.createQuery(cq);
+       List<Object[]> resultList = query.getResultList();
+       for(Object[] row:resultList){
+           Object member = (Object) row[0];
+           Object maage = (Object) row[1];
+           Object minage = (Object) row[2];
+//            Team team = (Team) row[1];
+           System.out.println("member_team_name"+member+"member maxAge"+maage+"member minAge"+minage );
+//            .getName());
+//            System.out.println("street"+member.getStreet()+"team_id"+member.getTeam());
+//            System.out.println("team_id"+team.getId()+"name"+team.getName());
+//
+//        }
+       }
+   }
+
+   private static void joinQuery(EntityManager em){
+       CriteriaBuilder cb = em.getCriteriaBuilder();
+       CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+       Root<Member> m = cq.from(Member.class);
+
+       Join<Member,Team> t = m.join("team",JoinType.INNER);
+       cq.multiselect(m,t).where(cb.equal(t.get("name"),"팀A"));
+
+       TypedQuery<Object[]> query = em.createQuery(cq);
+       List<Object[]> resultList = query.getResultList();
+//       for(Object[] row:resultList){
+//           Object member = (Object) row[0];
+//           Object maage = (Object) row[1];
+//           Object minage = (Object) row[2];
+//           System.out.println("member_team_name"+member+"member maxAge"+maage+"member minAge"+minage );
+//       }
+   }
+
+
+
 
 
 }

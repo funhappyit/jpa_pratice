@@ -22,9 +22,9 @@ public class Member{
     private String street;
     private String zipcode;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="TEAM_ID")
-//    private Team team;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="TEAM_ID")
+    private Team team;
 
     public int getAge() {
         return age;
@@ -34,13 +34,13 @@ public class Member{
         this.age = age;
     }
 
-//    public Team getTeam() {
-//        return team;
-//    }
-//
-//    public void setTeam(Team team) {
-//        this.team = team;
-//    }
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     public Long getId() {
         return id;
