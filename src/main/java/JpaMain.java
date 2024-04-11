@@ -455,75 +455,75 @@ public class JpaMain {
 //            System.out.println("member city="+member.getCity()+"street=>"+member.getStreet()+"zipcode"+member.getZipcode());
 //        }
 //    }
-    public static void query(EntityManager em){
-        Query query = em.createQuery("SELECT m.name,m.zipcode from Member m");
-        List resultList = query.getResultList();
-        for(Object o :resultList){
-            Object[] result = (Object[]) o; //결과가 둘 이상이면 Object[] 반환
-            System.out.println("username="+result[0]);
-            System.out.println("age = "+result[1]);
-        }
-    }
-    public static void paramQuery(EntityManager em){
-        String usernameParam = "test";
-        TypedQuery<Member> query = em.createQuery("SELECT m FROM Member m where m.name=:name",
-                Member.class);
-        query.setParameter("name",usernameParam);
-        List<Member> resultList = query.getResultList();
-        for(int i=0;i<resultList.size();i++){
-            System.out.println(resultList.get(i).getCity());
-        }
-
-    }
-
-    public static void paramPositionQuery(EntityManager em){
-        String usernameParam = "test";
-        List<Member> members = em.createQuery("SELECT m FROM Member m where m.name=?1",Member.class)
-                            .setParameter(1,usernameParam)
-                .getResultList();
-        for(int i=0;i<members.size();i++){
-            System.out.println(members.get(i).getCity());
-        }
-    }
-    public static void paramManyQuery(EntityManager em){
-        Query query = em.createQuery("SELECT m.name,m.city FROM Member m");
-        List resultList = query.getResultList();
-
-        Iterator iterator = resultList.iterator();
-        while(iterator.hasNext()){
-            Object[] row = (Object[]) iterator.next();
-            String username = (String)row[0];
-            String city = (String) row[1];
-            System.out.println("username---->"+username);
-            System.out.println("city-------->"+city);
-        }
-    }
-
-    private static List<UserDTO> newUseAgo(EntityManager em){
-        List<Object[]> resultList = em.createQuery("SELECT m.name,m.city FROM Member m").getResultList();
-
-        //객체 변환 작업
-        List<UserDTO> userDTOS = new ArrayList<UserDTO>();
-        for(Object[] row:resultList){
-            UserDTO userDTO = new UserDTO((String)row[0],(String)row[1]);
-            userDTOS.add(userDTO);
-        }
-        return userDTOS;
-    }
-    //New 명령어 사용후
-    private static void newUseAfter(EntityManager em){
-     TypedQuery<UserDTO> query = em.createQuery("SELECT new model.UserDTO(m.name,m.city) FROM Member m",UserDTO.class);
-     List<UserDTO> resultList = query.getResultList();
-    }
-    //페이징 API
-    private static void pageingAPI(EntityManager em){
-        TypedQuery<Member> query = em.createQuery("SELECT m FROM Member m ORDER BY m.name DESC ",Member.class);
-
-        query.setFirstResult(10);
-        query.setMaxResults(20);
-        query.getResultList();
-
-    }
+//    public static void query(EntityManager em){
+//        Query query = em.createQuery("SELECT m.name,m.zipcode from Member m");
+//        List resultList = query.getResultList();
+//        for(Object o :resultList){
+//            Object[] result = (Object[]) o; //결과가 둘 이상이면 Object[] 반환
+//            System.out.println("username="+result[0]);
+//            System.out.println("age = "+result[1]);
+//        }
+//    }
+//    public static void paramQuery(EntityManager em){
+//        String usernameParam = "test";
+//        TypedQuery<Member> query = em.createQuery("SELECT m FROM Member m where m.name=:name",
+//                Member.class);
+//        query.setParameter("name",usernameParam);
+//        List<Member> resultList = query.getResultList();
+//        for(int i=0;i<resultList.size();i++){
+//            System.out.println(resultList.get(i).getCity());
+//        }
+//
+//    }
+//
+//    public static void paramPositionQuery(EntityManager em){
+//        String usernameParam = "test";
+//        List<Member> members = em.createQuery("SELECT m FROM Member m where m.name=?1",Member.class)
+//                            .setParameter(1,usernameParam)
+//                .getResultList();
+//        for(int i=0;i<members.size();i++){
+//            System.out.println(members.get(i).getCity());
+//        }
+//    }
+//    public static void paramManyQuery(EntityManager em){
+//        Query query = em.createQuery("SELECT m.name,m.city FROM Member m");
+//        List resultList = query.getResultList();
+//
+//        Iterator iterator = resultList.iterator();
+//        while(iterator.hasNext()){
+//            Object[] row = (Object[]) iterator.next();
+//            String username = (String)row[0];
+//            String city = (String) row[1];
+//            System.out.println("username---->"+username);
+//            System.out.println("city-------->"+city);
+//        }
+//    }
+//
+//    private static List<UserDTO> newUseAgo(EntityManager em){
+//        List<Object[]> resultList = em.createQuery("SELECT m.name,m.city FROM Member m").getResultList();
+//
+//        //객체 변환 작업
+//        List<UserDTO> userDTOS = new ArrayList<UserDTO>();
+//        for(Object[] row:resultList){
+//            UserDTO userDTO = new UserDTO((String)row[0],(String)row[1]);
+//            userDTOS.add(userDTO);
+//        }
+//        return userDTOS;
+//    }
+//    //New 명령어 사용후
+//    private static void newUseAfter(EntityManager em){
+//     TypedQuery<UserDTO> query = em.createQuery("SELECT new model.UserDTO(m.name,m.city) FROM Member m",UserDTO.class);
+//     List<UserDTO> resultList = query.getResultList();
+//    }
+//    //페이징 API
+//    private static void pageingAPI(EntityManager em){
+//        TypedQuery<Member> query = em.createQuery("SELECT m FROM Member m ORDER BY m.name DESC ",Member.class);
+//
+//        query.setFirstResult(10);
+//        query.setMaxResults(20);
+//        query.getResultList();
+//
+//    }
     //집합과 정렬
 //    private static void groupByAPI(EntityManager em){
 //        Query query = em.createQuery("select t.name,COUNT(m.age),SUM(m.age),AVG(m.age),MAX(m.age),MIN(m.age) from Member m LEFT JOIN m.team t GROUP BY t.name");
@@ -729,8 +729,15 @@ public class JpaMain {
 //       }
    }
 
+   private static void problem(EntityManager em){
+       List<Member> members = em.createQuery("SELECT m FROM Member m", Member.class)
+               .getResultList();
 
+       for (Member member : members) {
+           System.out.println("Member: " + member);
+       }
 
+   }
 
 
 }
