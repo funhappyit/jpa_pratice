@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -21,7 +22,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            joinQuery (em); //비즈니스 로직 실행
+            subQuery (em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -741,8 +742,53 @@ public class JpaMain {
        for (Member member : members) {
            System.out.println("Member: " + member);
        }
+   }
+   private static void subQuery(EntityManager em){
+        /*
+        JPQL:
+        select m from Member m
+        where m.age >=
+        (select AVG(m2.age) from Member m2)
+        */
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> mainQuery = cb.createQuery(Member.class);
+
+        //서브 쿼리 생성
+       Subquery<Double> subQuery = mainQuery.subquery(Double.class);
+       Root<Member> m2 = subQuery.from(Member.class);
+       subQuery.select(cb.avg(m2.get("age")));
+
+       //메인 쿼리 생성
+       Root<Member> m = mainQuery.from(Member.class);
+       mainQuery.select(m)
+           .where(cb.ge(m.get("age"),subQuery));
+
+       List<Member> resultList = em.createQuery(mainQuery).getResultList();
 
    }
+    private static void criteraQuery(EntityManager em){
+        /*
+        JPQL
+        select m from Member m
+        where exists
+            (select t from m.team t where t.name='팀A')
+        */
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> mainQuery = cb.createQuery(Member.class);
 
+        //서브 쿼리에서 사용되는 메인 쿼리의 m
+        Root<Member> m = mainQuery.from(Member.class);
 
+        //서브 쿼리 생성
+        Subquery<Team> subquery = mainQuery.subquery(Team.class);
+        Root<Member> subM = subquery.correlate(m);//메인 쿼리의 별칭을 가져옴
+
+        Join<Member,Team> t = subM.join("team");
+        subquery.select(t).where(cb.equal(t.get("name"),"팀A"));
+
+        //메인 쿼리 생성
+        mainQuery.select(m).where(cb.exists(subquery));
+
+        List<Member> resultList = em.createQuery(mainQuery).getResultList();
+    }
 }
