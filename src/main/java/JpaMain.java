@@ -1,3 +1,4 @@
+import com.querydsl.jpa.impl.JPAQuery;
 import model.*;
 import org.h2.engine.User;
 
@@ -22,7 +23,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            subQuery (em); //비즈니스 로직 실행
+            queryDSL (em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -445,9 +446,7 @@ public class JpaMain {
         List<Member> resultList = em.createQuery(cq).getResultList();
 
     }
-    public static void queryDSL(EntityManager em){
-        //준비
-    }
+
     public static void nativeSQL(EntityManager em){
         String sql = "SELECT ID,AGE,TEAM_ID,NAME FROM MEMBER WHERE NAME='kim'";
         List<Member> resultList = em.createNativeQuery(sql,Member.class).getResultList();
@@ -790,5 +789,67 @@ public class JpaMain {
         mainQuery.select(m).where(cb.exists(subquery));
 
         List<Member> resultList = em.createQuery(mainQuery).getResultList();
+    }
+    private static void criteraQueryIn(EntityManager em){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+        Root<Member> m =cq.from(Member.class);
+
+        cq.select(m)
+                .where(cb.in(m.get("username"))
+                .value("회원1")
+                .value("회원2"));
+
+        List<Member> resultList = em.createQuery(cq).getResultList();
+    }
+    private static void caseWhen(EntityManager em){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+        Root<Member> m = cq.from(Member.class);
+
+        cq.select(cb.construct(
+                Member.class,
+                m.get("username"),
+                cb.selectCase()
+                        .when(cb.ge(m.<Integer>get("age"), 60), 600)
+                        .when(cb.le(m.<Integer>get("age"), 15), 500)
+                        .otherwise(1000)
+        ));
+        List<Member> resultList = em.createQuery(cq).getResultList();
+    }
+
+    private static void parameter(EntityManager em){
+        /*
+        JPQL
+        select m from Member m
+        where m.username = :usernameParam
+         */
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+
+        Root<Member> m = cq.from(Member.class);
+
+        //정의
+        cq.select(m)
+                .where(cb.equal(m.get("username"),cb.parameter(String.class,"usernameParam")));
+        List<Member> resultList = em.createQuery(cq)
+                .setParameter("usernameParam","회원1")
+                .getResultList();
+    }
+    private static void jpqlDynamicQuery(EntityManager em){
+        //검색 조건
+        Integer age = 10;
+        String username = null;
+        String teamName = "팀A";
+    }
+    private static void queryDSL(EntityManager em){
+        JPAQuery<Member> query = new JPAQuery<>(em);
+        QMember qMember = new QMember("m"); // 생성되는 JPQL의 별칭이 m
+        List<Member> members =
+                query.select(qMember)
+                        .from(qMember)
+                        .where(qMember.username.eq("회원1"))
+                        .orderBy(qMember.username.desc())
+                        .fetch();
     }
 }

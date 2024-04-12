@@ -13,8 +13,6 @@ import javax.persistence.*;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class Member{
 
@@ -30,6 +28,22 @@ public class Member{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="TEAM_ID")
     private Team team;
+
+    public Member(String username, int age) {
+        this.username = username;
+        this.age = age;
+    }
+
+    public Member(Long id, String username, int age, Team team) {
+        this.id = id;
+        this.username = username;
+        this.age = age;
+        this.team = team;
+    }
+
+    public Member() {
+
+    }
 
     public Long getId() {
         return id;
