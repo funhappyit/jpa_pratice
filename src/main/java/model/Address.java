@@ -19,7 +19,7 @@ public class Address {
 		this.city = city;
 		this.street = street;
 		this.zipcode = zipcode;
-	}
+	};;
 
 	public Address() {
 

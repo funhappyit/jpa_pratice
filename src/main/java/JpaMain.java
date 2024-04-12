@@ -32,6 +32,11 @@ public class JpaMain {
         }
         emf.close(); //[엔티티 매니저 팩토리] - 종료
     }
+    private static void CriteriaQueryStart(EntityManager em){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+
+    }
 
 
     //비즈닌스 로직
