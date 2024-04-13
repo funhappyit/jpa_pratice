@@ -3,8 +3,8 @@ package model;
 import javax.persistence.*;
 import java.util.Date;
 
-//@Entity
-//@Table(name = "ORDER_TABLE")
+@Entity
+@Table(name = "ORDER_TABLE")
 public class Order {
 
     @Id @GeneratedValue
@@ -15,9 +15,9 @@ public class Order {
     @JoinColumn(name="MEMBER_ID")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name="PRODUCT_ID")
-    private Product product;
+//    @ManyToOne
+//    @JoinColumn(name="PRODUCT_ID")
+//    private Product product;
 
     private int orderAmount;
 
@@ -37,13 +37,13 @@ public class Order {
         this.member = member;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+//    public Product getProduct() {
+//        return product;
+//    }
+//
+//    public void setProduct(Product product) {
+//        this.product = product;
+//    }
 
     public int getOrderAmount() {
         return orderAmount;

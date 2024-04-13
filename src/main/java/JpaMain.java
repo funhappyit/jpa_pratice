@@ -1,7 +1,11 @@
+import com.querydsl.core.QueryModifiers;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import model.*;
+import org.eclipse.jdt.internal.compiler.lookup.InnerEmulationDependency;
 import org.h2.engine.User;
 
+import javax.naming.directory.SearchResult;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
 import javax.persistence.criteria.Order;
@@ -10,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import static model.QMember.member;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -23,7 +28,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         try{
             tx.begin(); //[트랜잭션] -시작
-            queryDSL (em); //비즈니스 로직 실행
+            queryModifiers (em); //비즈니스 로직 실행
             tx.commit(); //[트랜잭션] - 커밋
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -852,4 +857,66 @@ public class JpaMain {
                         .orderBy(qMember.username.desc())
                         .fetch();
     }
+    public static void basic(EntityManager em){
+        JPAQuery<Member> query = new JPAQuery<>(em);
+
+        List<Member> members = query
+                .select(member)
+                .from(member)
+                .where(member.username.eq("회원1"))
+                .orderBy(member.username.desc())
+                .fetch();
+    }
+
+    public static void basicTeam(EntityManager em){
+        JPAQuery<Item> query = new JPAQuery<>(em);
+        QItem item = QItem.item;
+//        List<Item> list = query
+//                .select(item)
+//                .from(item)
+//                .where(item.name.eq("좋은상품").and(item.price.gt(20000)))
+//                .fetch();
+        List<Item> list = query
+                .select(item)
+                .from(item)
+                .where(item.price.between(10000,20000))
+                .fetch();
+    }
+    private static void pageingOrderBy(EntityManager em){
+        JPAQuery<Item> query = new JPAQuery<>(em);
+        QItem item = QItem.item;
+        List<Item> list = query.select(item)
+                .from(item)
+                .where(item.price.gt(200000))
+                .orderBy(item.price.desc(),item.stockQuantity.asc())
+                .offset(10).limit(20)
+                .fetch();
+    }
+
+    private static void queryModifiers(EntityManager em){
+        JPAQuery<Item> query = new JPAQuery<>(em);
+        QItem item = QItem.item;
+        QueryModifiers queryModifiers = new QueryModifiers(20L,10L);//limit,offset
+        List<Item> list = query.from(item)
+                .restrict(queryModifiers)
+                .fetch();
+    }
+    private static void pageingOrderByListResult(EntityManager em){
+//        JPAQuery<Item> query = new JPAQuery<>(em);
+//        QItem item = QItem.item;
+//        QueryResults<Item> results =
+//                query.from(item)
+//                        .where(item.price.gt(10000))
+//                        .offset(10).limit(20)
+//                        .fetchResults(0, Long.MAX_VALUE);
+//
+//        long totalCount = results.getTotal();
+//        List<Item> resultList = results.getResults();
+    }
+
+
+
+
+
+
 }
